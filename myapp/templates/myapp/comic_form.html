@@ -1,0 +1,7 @@
+<form method="post">
+    <h1>{{title}}</h1>
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ form.instance.creator }}
+    <input type="submit" value="Save">
+</form>
