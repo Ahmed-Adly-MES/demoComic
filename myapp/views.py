@@ -202,8 +202,12 @@ class ComicCreate(CreateView):
              self).get_context_data(*args, **kwargs)
         # add extra field
         context["title"] = 'Create Comic'
-        
         return context
+        
+   def form_valid(self, form):
+      form.instance.creator = User.objects.get(id = self.kwargs['uid'])
+      return super().form_valid(form)
+   
    def get_success_url(self):
       obj = Comic.objects.last()
       return reverse('comic_detail', kwargs={'pk': getattr(obj,'id')})

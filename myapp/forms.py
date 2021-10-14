@@ -13,5 +13,5 @@ class CreateComicForm(forms.ModelForm):
         # specify fields to be used
         fields = [
             "name" ,
-            "genre"
+            "genre",
         ]
