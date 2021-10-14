@@ -8,6 +8,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.shortcuts import render
 from django.urls import reverse
+
 '''from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 import datetime
@@ -157,12 +158,18 @@ class UserList(ListView):
 class UserDetails(DetailView):
    model = User
 
-   def postComic(request):
-      username = "not logged in"
-      response = HttpResponse(username)
-      response.set_cookie('username', username)
-      
-      return response
+   def get_context_data(self, *args, **kwargs):
+        context = super(UserDetails,
+             self).get_context_data(*args, **kwargs)
+        # add extra field 
+        comicList = []
+        subsList = Subscription.objects.filter(user_id = context["object"].id)
+        for subs in subsList:
+           comicList += Comic.objects.filter(id = subs.comic_id_id)
+        
+        context["comiclist"] = comicList
+        context["recommendedComics"] = Comic.objects.all()
+        return context
 
 class UserUpdate(UpdateView):
    model = User
@@ -188,36 +195,33 @@ class UserDelete(DeleteView):
 class ComicCreate(CreateView):
    model = Comic
 
-   fields = ['name','genre','creator']
-   def create_view(request,uid):
-    # dictionary for initial data with
-    # field names as keys
-    context ={}
- 
-    # add the dictionary during initialization
-    form = CreateComicForm(request.POST or None)
-   
-    user = User.objects.get(id=uid)
-    form.cleaned_data['creator'] = user
-    
-    if form.is_valid():
-       form.save()
-         
-    context['form']= form
-    return render(request, "user_form.html", context)
-        
+   form_class = CreateComicForm
+
    def get_context_data(self, *args, **kwargs):
         context = super(ComicCreate,
              self).get_context_data(*args, **kwargs)
-        # add extra field 
+        # add extra field
         context["title"] = 'Create Comic'
+        
         return context
-
    def get_success_url(self):
-      obj = User.objects.last()
-      return reverse('user_details', kwargs={'pk': getattr(obj,'id')})
+      obj = Comic.objects.last()
+      return reverse('comic_detail', kwargs={'pk': getattr(obj,'id')})
 
 class ComicList(ListView):
    model = Comic
 
    fields = ['name','genre','creator']
+
+class ComicDetails(DetailView):
+   model = Comic
+
+   def get_context_data(self, *args, **kwargs):
+        context = super(ComicDetails,
+             self).get_context_data(*args, **kwargs)
+        # add extra field
+        reviews = Review.objects.filter(comic_id = context["object"].id)
+        context['reviews'] = reviews
+        
+        return context
+

@@ -1,0 +1,11 @@
+<h1>{{ object.name }}</h1>
+<p>Genre    |  {{ object.genre }}</p>
+<p>Creator  |  {{ object.creator.username }}</p>
+
+<h1>Reviews</h1>
+{%if not reviews%}<p>Be the first to review this comic</p>{% endif %}
+{%for review in reviews%}
+    <h4>{{review.user_id.username}}</h4>
+    <p>{{review.name}}<p>
+    </li>
+{%endfor%}

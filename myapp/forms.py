@@ -9,11 +9,9 @@ class CreateComicForm(forms.ModelForm):
     class Meta:
         # specify model to be used
         model = Comic
- 
+        
         # specify fields to be used
         fields = [
             "name" ,
-            "genre",
-            "creator"
+            "genre"
         ]
-        # widgets = {'creator': forms.HiddenInput()}  

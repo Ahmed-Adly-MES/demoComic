@@ -1,4 +1,15 @@
 <h1>{{ object.username }}</h1>
-<p>{{ object.password }}</p>
+<p><button type="submit" onclick="location.href='{% url 'user_update' object.id %}'" name='mybtn2'> Change Password</button>
+</p>
 
  <button type="submit" onclick="location.href='{% url 'comic_create' object.id %}'" name='mybtn2'> Post Comic</button>
+
+<h1>Subscriptions</h1>
+{% for instance in comiclist %}
+         <li><a href="{% url 'comic_detail' instance.id %}">{{instance.name}}</a></li>
+{% endfor %}
+
+<h1>Recommended</h1>
+{% for comic in recommendedComics %}
+    <li><a href="{% url 'comic_detail' comic.id %}">{{comic.name}}</a></li>
+{% endfor %}
